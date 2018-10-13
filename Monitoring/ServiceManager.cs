@@ -24,8 +24,8 @@ namespace Monitoring
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Контексты БД
             services.AddDbContext<AppDbContext>(builder => builder.UseNpgsql(""));
+            services.AddScoped<ITransactionManager, AppDbContextTransactionManager>();
 
             // Репозитории
             services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));

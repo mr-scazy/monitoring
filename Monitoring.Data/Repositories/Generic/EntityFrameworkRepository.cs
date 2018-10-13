@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Monitoring.Domain.Interfaces;
 
 namespace Monitoring.Data.Repositories.Generic
 {
-
     public class EntityFrameworkRepository<T> : IRepository<T> where T : class, IEntity, new()
     {
         private readonly AppDbContext _dbContext;
@@ -80,22 +78,22 @@ namespace Monitoring.Data.Repositories.Generic
 
         public void Delete(object id)
         {
-            throw new NotImplementedException();
+            _dbContext.SaveChanges();
         }
 
-        public Task DeleteAsync(object id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteAsync(object id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public void DeleteRange(IEnumerable<object> ids)
         {
-            throw new NotImplementedException();
+            _dbContext.SaveChanges();
         }
 
-        public Task DeleteRangeAsync(IEnumerable<object> ids, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteRangeAsync(IEnumerable<object> ids, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
