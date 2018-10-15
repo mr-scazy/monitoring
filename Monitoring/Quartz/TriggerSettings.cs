@@ -1,5 +1,4 @@
-﻿using Monitoring.Domain.Enums;
-using Quartz;
+﻿using Quartz;
 
 namespace Monitoring.Quartz
 {

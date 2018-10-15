@@ -7,6 +7,8 @@ using Quartz;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Monitoring.Services.Impl
@@ -15,6 +17,10 @@ namespace Monitoring.Services.Impl
     {
         private readonly AppDbContext _appDbContext;
         private readonly IScheduler _scheduler;
+
+        private static readonly IReadOnlyList<Type> JobTypes = Assembly
+            .GetAssembly(typeof(ScheduleJobService))
+            .GetQuartzJobTypes();
 
         public ScheduleJobService(AppDbContext appDbContext, IScheduler scheduler)
         {
@@ -28,13 +34,12 @@ namespace Monitoring.Services.Impl
 
             var exeptions = new List<Exception>();
 
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 try
                 {
-                    var jobType = Type.GetType($"Monitoring.Quartz.Jobs.{item.Job}");
-
-                    if(jobType == null)
+                    var jobType = GetJobType(item.Job);
+                    if (jobType == null)
                     {
                         continue;
                     }
@@ -50,7 +55,7 @@ namespace Monitoring.Services.Impl
 
                     await _scheduler.ScheduleJobTrigger(jobType, settings, new JobDataMap(@params));
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     exeptions.Add(e);
                 }
@@ -67,9 +72,8 @@ namespace Monitoring.Services.Impl
             {
                 try
                 {
-                    var jobType = Type.GetType($"Monitoring.Quartz.Jobs.{item.Job}");
-
-                    if(jobType == null)
+                    var jobType = GetJobType(item.Job);
+                    if (jobType == null)
                     {
                         continue;
                     }
@@ -96,5 +100,11 @@ namespace Monitoring.Services.Impl
 
             return exeptions;
         }
+
+        Type IScheduleJobService.GetJobType(string name) 
+            => GetJobType(name);
+
+        private static Type GetJobType(string name) 
+            => JobTypes.FirstOrDefault(x => x.Name == name);
     }
 }

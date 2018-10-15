@@ -10,5 +10,7 @@ namespace Monitoring.Services
         Task<IList<Exception>> InitAsync();
 
         Task<IList<Exception>> ConfigureAsync(params ScheduleJob[] scheduleJobs);
+
+        Type GetJobType(string name);
     }
 }

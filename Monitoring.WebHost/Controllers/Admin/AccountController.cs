@@ -28,12 +28,12 @@ namespace Monitoring.WebHost.Controllers.Admin
 
             var jwt = JwtSecurity.CreateToken(identity.Claims);
 
-            var access_token = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            return Success(new { access_token });
+            return Success(new { accessToken });
         }
 
-        [HttpGet("Init")]
+        [HttpGet("init")]
         public async Task<IActionResult> Init([FromServices] IUserManager userManager)
         {
             var user = await userManager.FindByNameAsync("admin");

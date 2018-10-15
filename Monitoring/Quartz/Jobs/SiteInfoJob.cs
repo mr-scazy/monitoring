@@ -1,16 +1,14 @@
 ﻿using Quartz;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Monitoring.Quartz.Jobs
 {
-    public class SiteInfoJob : IJob
+    public class SiteInfoJob : BaseJob
     {
-        public async Task Execute(IJobExecutionContext context)
+        protected override async Task ExecuteAsync(IJobExecutionContext context, IServiceProvider serviceProvider)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
         }
     }
 }

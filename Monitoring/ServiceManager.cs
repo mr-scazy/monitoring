@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Data;
+using Monitoring.Quartz;
 using Monitoring.Services;
 using Monitoring.Services.Impl;
 
@@ -31,6 +32,10 @@ namespace Monitoring
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISiteInfoService, SiteInfoService>();
             services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IScheduleJobService, ScheduleJobService>();
+
+            services.AddSchedulerFactory();
+            services.AddScheduler();
         }
     }
 }
