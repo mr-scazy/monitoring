@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Monitoring.Domain\Monitoring.Domain.csproj" />
     <ProjectReference Include="..\Monitoring\Monitoring.csproj" />
   </ItemGroup>
 

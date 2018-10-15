@@ -1,11 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Monitoring.Domain.Entities;
-using Monitoring.Domain.Interfaces;
-using Monitoring.WebHost.Dto;
-using Monitoring.WebHost.Security;
+using Monitoring.Services;
+using Monitoring.Security;
 
 namespace Monitoring.WebHost.Controllers.Admin
 {
@@ -19,10 +17,10 @@ namespace Monitoring.WebHost.Controllers.Admin
             _accountService = accountService;
         }
 
-        [HttpPost("/token")]
-        public async Task<IActionResult> Token([FromForm] PwForm form)
+        [HttpGet("token")]
+        public async Task<IActionResult> Token(string username, string password)
         {
-            var identity = await _accountService.GetIdentityAsync(form.Username, form.Password);
+            var identity = await _accountService.GetIdentityAsync(username, password);
             if (identity == null)
             {
                 return BadRequest("Invalid username or password.");
@@ -30,34 +28,23 @@ namespace Monitoring.WebHost.Controllers.Admin
 
             var jwt = JwtSecurity.CreateToken(identity.Claims);
 
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var access_token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            var response = new
-            {
-                access_token = encodedJwt,
-                username = identity.Name
-            };
-
-            return Success(response);
+            return Success(new { access_token });
         }
 
-        [HttpGet("init")]
-        public async Task<IActionResult> Init([FromServices] UserManager<User> userManager)
+        [HttpGet("Init")]
+        public async Task<IActionResult> Init([FromServices] IUserManager userManager)
         {
-            var user = userManager.FindByNameAsync("admin");
+            var user = await userManager.FindByNameAsync("admin");
             if (user != null)
             {
                 return NotFound();
             }
 
-            var result = await userManager.CreateAsync(
-                new User
-                {
-                    UserName = "admin"
-                }, 
-                "admin");
+            await userManager.CreateAsync(new User { UserName = "admin" }, "admin");
 
-            return Success(result);
+            return Success();
         }
     }
 }

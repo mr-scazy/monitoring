@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Monitoring.WebHost.Security
+namespace Monitoring.Security
 {
     public class AuthOptions
     {

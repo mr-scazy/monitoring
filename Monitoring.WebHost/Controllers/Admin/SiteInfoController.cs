@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monitoring.Domain.Entities;
-using Monitoring.Domain.Interfaces;
+using Monitoring.Services;
 
 namespace Monitoring.WebHost.Controllers.Admin
 {

@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Monitoring.Data;
 using Monitoring.Domain.Dto;
 using Monitoring.Domain.Entities;
-using Monitoring.Domain.Interfaces;
 
-namespace Monitoring.Services
+namespace Monitoring.Services.Impl
 {
     public class SiteInfoService : ISiteInfoService
     {
         private readonly AppDbContext _appDbContext;
+        private readonly IScheduleJobService _scheduleJobService;
 
-        public SiteInfoService(AppDbContext appDbContext)
+        public SiteInfoService(AppDbContext appDbContext, IScheduleJobService scheduleJobService)
         {
             _appDbContext = appDbContext;
+            _scheduleJobService = scheduleJobService;
         }
 
         public async Task<ListDataResult<SiteInfoDto>> GetDtoListResultAsync()

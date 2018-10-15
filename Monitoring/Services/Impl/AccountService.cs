@@ -1,19 +1,16 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Monitoring.Domain.Entities;
-using Monitoring.Domain.Interfaces;
 
-namespace Monitoring.Services
+namespace Monitoring.Services.Impl
 {
     /// <summary>
     /// Сервис работы с аккаунтом пользователя
     /// </summary>
     public class AccountService : IAccountService
     {
-        private readonly UserManager<User> _userManager;
+        private readonly IUserManager _userManager;
 
-        public AccountService(UserManager<User> userManager)
+        public AccountService(IUserManager userManager)
         {
             _userManager = userManager;
         }
@@ -30,7 +27,7 @@ namespace Monitoring.Services
                 return null;
             }
 
-            if (!await _userManager.CheckPasswordAsync(user, password))
+            if (!_userManager.CheckPassword(user, password))
             {
                 return null;
             }

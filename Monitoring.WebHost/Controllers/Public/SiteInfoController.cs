@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Monitoring.Domain.Interfaces;
+using Monitoring.Services;
 
 namespace Monitoring.WebHost.Controllers.Public
 {

@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Data;
-using Monitoring.Domain.Interfaces;
 using Monitoring.Services;
+using Monitoring.Services.Impl;
 
 namespace Monitoring
 {
@@ -30,6 +30,7 @@ namespace Monitoring
             
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ISiteInfoService, SiteInfoService>();
+            services.AddScoped<IUserManager, UserManager>();
         }
     }
 }
