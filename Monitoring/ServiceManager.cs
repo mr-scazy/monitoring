@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Monitoring.Data.EntityFramework;
-using Monitoring.Data.Repositories.Generic;
+using Monitoring.Data;
 using Monitoring.Domain.Interfaces;
+using Monitoring.Services;
 
 namespace Monitoring
 {
@@ -20,15 +20,16 @@ namespace Monitoring
         }
 
         /// <summary>
-        /// Конфигурация сервисов
+        /// Конфигурирование сервисов
         /// </summary>
+        /// <param name="services">Коллекция сервисов</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(builder => builder.UseNpgsql(""));
-            services.AddScoped<ITransactionManager, AppDbContextTransactionManager>();
-
-            // Репозитории
-            services.AddScoped(typeof(IRepository<>), typeof(EntityFrameworkRepository<>));
+            services.AddDbContext<AppDbContext>(builder 
+                => builder.UseNpgsql(_configuration.GetConnectionString("AppDb")));
+            
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ISiteInfoService, SiteInfoService>();
         }
     }
 }
