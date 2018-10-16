@@ -8,6 +8,8 @@ namespace Monitoring.Services
     {
         Task<ListDataResult<SiteInfoDto>> GetDtoListResultAsync();
 
-        Task<ListDataResult<SiteInfo>> GetListResultAsync();
+        Task<ListDataResult<SiteInfoScheduleDto>> GetListResultAsync();
+
+        Task<SiteInfo> CreateAsync(SiteInfoScheduleDto dto);
     }
 }

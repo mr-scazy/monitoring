@@ -29,6 +29,7 @@ namespace Monitoring.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>().HasIndex(x => x.UserName).IsUnique();
+            modelBuilder.Entity<ScheduleJob>().HasIndex(x => x.Name).IsUnique();
         }
     }
 }

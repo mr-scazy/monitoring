@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Monitoring.Domain.Dto;
 using Monitoring.Domain.Entities;
 using Monitoring.Services;
 
@@ -22,9 +23,10 @@ namespace Monitoring.WebHost.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] SiteInfo model)
+        public async Task<IActionResult> Post([FromBody] SiteInfoScheduleDto dto)
         {
-            return CreatedAtAction("Get", 0);
+            var entity = await _siteInfoService.CreateAsync(dto);
+            return CreatedAtAction("Get", new { entity.Id });
         }
 
         [HttpPut]

@@ -4,7 +4,7 @@ namespace Monitoring.Domain.Dto
 {
     public static class ListDataResult
     {
-        public static ListDataResult<TItem> NewResult<TItem>(IReadOnlyList<TItem> items, int total)
+        public static ListDataResult<TItem> Result<TItem>(IReadOnlyList<TItem> items, int total)
             => new ListDataResult<TItem>(items, total);
     }
 
