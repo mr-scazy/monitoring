@@ -80,7 +80,7 @@ namespace Monitoring.Services.Impl
             await _appDbContext.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
 
-            var scheduleJob = await _scheduleJobService.AddScheduleJobAsync(dto, nameof(SiteInfoJob));
+            var scheduleJob = await _scheduleJobService.AddScheduleJobAsync(dto, nameof(PingJob));
 
             await _appDbContext.SaveChangesAsync();
 
@@ -109,8 +109,8 @@ namespace Monitoring.Services.Impl
             //задаем ед. измерения в секундах
             dto.IntervalUnit = IntervalUnit.Second;
             
-            var scheduleJob = await _scheduleJobService.GetScheduleJobAsync<SiteInfoJob>(entity.Id.ToString()) ??
-                              await _scheduleJobService.AddScheduleJobAsync(dto, nameof(SiteInfoJob));
+            var scheduleJob = await _scheduleJobService.GetScheduleJobAsync<PingJob>(entity.Id.ToString()) ??
+                              await _scheduleJobService.AddScheduleJobAsync(dto, nameof(PingJob));
 
             await _appDbContext.SaveChangesAsync();
 
@@ -132,7 +132,7 @@ namespace Monitoring.Services.Impl
 
             _appDbContext.Remove(entity);
 
-            var scheduleJob = await _scheduleJobService.GetScheduleJobAsync<SiteInfoJob>(entity.Id.ToString());
+            var scheduleJob = await _scheduleJobService.GetScheduleJobAsync<PingJob>(entity.Id.ToString());
             if (scheduleJob != null)
             {
                 _appDbContext.Remove(scheduleJob);
