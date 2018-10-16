@@ -41,9 +41,7 @@ namespace Monitoring.Services.Impl
                 .OrderBy(x => x.Id)
                 .ToListAsync();
 
-            var total = items.Count;
-
-            return ListDataResult.Result(items, total);
+            return ListDataResult.Result(items, items.Count);
         }
 
         /// <summary>
@@ -62,9 +60,7 @@ namespace Monitoring.Services.Impl
                 .OrderBy(x => x.Id)
                 .ToListAsync();
 
-            var total = items.Count;
-
-            return ListDataResult.Result(items, total);
+            return ListDataResult.Result(items, items.Count);
         }
 
         /// <summary>

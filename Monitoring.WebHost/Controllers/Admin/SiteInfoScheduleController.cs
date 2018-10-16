@@ -1,16 +1,17 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monitoring.Domain.Dto;
 using Monitoring.Services;
 
 namespace Monitoring.WebHost.Controllers.Admin
 {
-    [Route("api/admin/[controller]")]
-    public class SiteInfoController : BaseController
+    [Route("api/admin/[controller]"), Authorize]
+    public class SiteInfoScheduleController : BaseController
     {
         private readonly ISiteInfoService _siteInfoService;
 
-        public SiteInfoController(ISiteInfoService siteInfoService)
+        public SiteInfoScheduleController(ISiteInfoService siteInfoService)
         {
             _siteInfoService = siteInfoService;
         }

@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Monitoring.Domain.Entities;
 using Monitoring.Services;
@@ -20,10 +21,15 @@ namespace Monitoring.WebHost.Controllers.Admin
         [HttpGet("token")]
         public async Task<IActionResult> Token(string username, string password)
         {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrEmpty(password))
+            {
+                return Fail("Недопустимый логин или пароль.");
+            }
+
             var identity = await _accountService.GetIdentityAsync(username, password);
             if (identity == null)
             {
-                return Fail("Invalid username or password.");
+                return Fail("Неверный логин или пароль.");
             }
 
             var jwt = JwtSecurity.CreateToken(identity.Claims);
@@ -32,6 +38,9 @@ namespace Monitoring.WebHost.Controllers.Admin
 
             return Success(new { accessToken });
         }
+
+        [HttpGet("check"), Authorize]
+        public IActionResult Check() => Success();
 
         [HttpGet("init")]
         public async Task<IActionResult> Init([FromServices] IUserManager userManager)
