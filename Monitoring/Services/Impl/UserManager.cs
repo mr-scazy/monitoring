@@ -47,14 +47,14 @@ namespace Monitoring.Services.Impl
         /// <summary>
         /// Проверить пароль пользователя
         /// </summary>
-        public static bool CheckPassword(User user, string password)
+        bool IUserManager.CheckPassword(User user, string password) 
+            => CheckPassword(user, password);
+        
+        private static bool CheckPassword(User user, string password)
         {
             var hash = SHA512Helper.GetHash(password);
             var isValid = user.PasswordHash == hash;
             return isValid;
         }
-
-        bool IUserManager.CheckPassword(User user, string password) 
-            => CheckPassword(user, password);
     }
 }

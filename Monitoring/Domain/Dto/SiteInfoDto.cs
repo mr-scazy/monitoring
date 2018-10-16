@@ -1,4 +1,5 @@
-﻿using Monitoring.Domain.Base;
+﻿using System;
+using Monitoring.Domain.Base;
 
 namespace Monitoring.Domain.Dto
 {
@@ -21,5 +22,10 @@ namespace Monitoring.Domain.Dto
         /// Доступный
         /// </summary>
         public bool IsAvailable { get; set; }
+
+        /// <summary>
+        /// Время обновления статуса
+        /// </summary>
+        public DateTime? StatusUpdateTime { get; set; }
     }
 }

@@ -12,6 +12,9 @@ using Quartz.Impl;
 
 namespace Monitoring.Quartz
 {
+    /// <summary>
+    /// Класс методов-расширений для работы с Quartz
+    /// </summary>
     public static class QuartzExtensions
     {
         /// <summary>
@@ -62,6 +65,12 @@ namespace Monitoring.Quartz
             return app;
         }
 
+        /// <summary>
+        /// Конфигурирование триггера
+        /// </summary>
+        /// <param name="scheduler">Планировщик</param>
+        /// <param name="settings">Настройки триггера</param>
+        /// <returns>Асинхронная операция успешности конфигурирования</returns>
         public static async Task<bool> ConfigureTriggerAsync(this IScheduler scheduler, TriggerSettings settings)
         {
             var triggerKey = new TriggerKey(settings.Name);
@@ -84,6 +93,13 @@ namespace Monitoring.Quartz
             return true;
         }
 
+        /// <summary>
+        /// Запланировать работу
+        /// </summary>
+        /// <param name="scheduler">Планировщик</param>
+        /// <param name="jobType">Тип работы</param>
+        /// <param name="settings">Настройки триггера</param>
+        /// <param name="map">Параметры для работы</param>
         public static async Task ScheduleJobTrigger(this IScheduler scheduler, Type jobType, TriggerSettings settings, JobDataMap map = null)
         {
             var trigger = TriggerBuilder.Create()                
@@ -100,6 +116,12 @@ namespace Monitoring.Quartz
             await scheduler.ScheduleJob(jobDetail, trigger);
         }
 
+        /// <summary>
+        /// Утановить интервал для триггера
+        /// </summary>
+        /// <param name="triggerBuilder">Билдер триггера</param>
+        /// <param name="settings">Настройки триггера</param>
+        /// <returns>Билдер триггера</returns>
         public static TriggerBuilder SetInterval(this TriggerBuilder triggerBuilder, TriggerSettings settings)
         {
             switch(settings.IntervalUnit)
@@ -116,11 +138,36 @@ namespace Monitoring.Quartz
                     return triggerBuilder.WithSimpleSchedule(builder 
                         => builder.WithIntervalInMinutes(settings.Interval));
 
+                case IntervalUnit.Hour:
+                    return triggerBuilder.WithSimpleSchedule(builder 
+                        => builder.WithIntervalInHours(settings.Interval));
+
+                case IntervalUnit.Day:
+                    return triggerBuilder.WithSimpleSchedule(builder 
+                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval)));
+
+                case IntervalUnit.Week:
+                    return triggerBuilder.WithSimpleSchedule(builder 
+                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval * 7)));
+
+                case IntervalUnit.Month:
+                    return triggerBuilder.WithSimpleSchedule(builder 
+                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval * 30)));
+
+                case IntervalUnit.Year:
+                    return triggerBuilder.WithSimpleSchedule(builder 
+                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval * 365)));
+
                 default: 
-                    throw new NotImplementedException();
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
+        /// <summary>
+        /// Получить все типы реализаций <see cref="IJob"/> из <see cref="Assembly"/>
+        /// </summary>
+        /// <param name="assembly">Сборка</param>
+        /// <returns>Список типов реализаций <see cref="IJob"/></returns>
         public static IReadOnlyList<Type> GetQuartzJobTypes(this Assembly assembly)
         {
             var types = assembly

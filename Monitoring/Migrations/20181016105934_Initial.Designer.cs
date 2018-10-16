@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Monitoring.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20181016051721_Initial")]
+    [Migration("20181016105934_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,15 +30,24 @@ namespace Monitoring.Migrations
 
                     b.Property<int>("IntervalUnit");
 
-                    b.Property<string>("Job");
+                    b.Property<string>("Job")
+                        .IsRequired()
+                        .HasMaxLength(256);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
 
-                    b.Property<string>("Params");
+                    b.Property<string>("Params")
+                        .IsRequired()
+                        .HasMaxLength(4096);
 
                     b.Property<DateTime>("UpdatedAt");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("ScheduleJobs");
                 });
@@ -53,6 +62,8 @@ namespace Monitoring.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256);
+
+                    b.Property<DateTime?>("StatusUpdateTime");
 
                     b.Property<string>("Url")
                         .IsRequired()

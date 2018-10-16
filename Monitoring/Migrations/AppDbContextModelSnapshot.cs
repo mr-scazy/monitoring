@@ -28,11 +28,17 @@ namespace Monitoring.Migrations
 
                     b.Property<int>("IntervalUnit");
 
-                    b.Property<string>("Job");
+                    b.Property<string>("Job")
+                        .IsRequired()
+                        .HasMaxLength(256);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
 
-                    b.Property<string>("Params");
+                    b.Property<string>("Params")
+                        .IsRequired()
+                        .HasMaxLength(4096);
 
                     b.Property<DateTime>("UpdatedAt");
 
@@ -54,6 +60,8 @@ namespace Monitoring.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256);
+
+                    b.Property<DateTime?>("StatusUpdateTime");
 
                     b.Property<string>("Url")
                         .IsRequired()

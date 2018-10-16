@@ -17,7 +17,7 @@ namespace Monitoring.WebHost.Controllers.Public
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var data = await _siteInfoService.GetDtoListResultAsync();
+            var data = await _siteInfoService.GetSiteInfoDtoListAsync();
 
             return Success(data);
         }

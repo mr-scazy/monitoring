@@ -10,9 +10,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Monitoring.Domain.Interfaces;
+using Monitoring.Domain.Services;
 
 namespace Monitoring.Services.Impl
 {
+    /// <summary>
+    /// Сервис планируемой работы
+    /// </summary>
     public class ScheduleJobService : IScheduleJobService
     {
         private readonly AppDbContext _appDbContext;
@@ -28,6 +33,9 @@ namespace Monitoring.Services.Impl
             _scheduler = scheduler;
         }
 
+        /// <summary>
+        /// Инициализация планирования работ
+        /// </summary>
         public async Task<IList<Exception>> InitAsync()
         {
             var items = await _appDbContext.Set<ScheduleJob>().ToArrayAsync();
@@ -64,6 +72,9 @@ namespace Monitoring.Services.Impl
             return exeptions;
         }
 
+        /// <summary>
+        /// Конфигурирование планирования работ
+        /// </summary>
         public async Task<IList<Exception>> ConfigureAsync(params ScheduleJob[] scheduleJobs)
         {
             var exeptions = new List<Exception>();
@@ -101,10 +112,56 @@ namespace Monitoring.Services.Impl
             return exeptions;
         }
 
+        /// <summary>
+        /// Добавить планируемую работу в БД
+        /// </summary>
+        public async Task<ScheduleJob> AddScheduleJobAsync<T>(T dto, string jobName) where T : class, IHasId, IHasInterval
+        {
+            var @params = new Dictionary<string, object>
+            {
+                ["SiteInfoId"] = dto.Id
+            };
+
+            var scheduleJob = new ScheduleJob
+            {
+                Name = $"{jobName}_{dto.Id}",
+                Job = jobName,
+                Params = JsonConvert.SerializeObject(@params),
+                Interval = dto.Interval,
+                IntervalUnit = dto.IntervalUnit,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _appDbContext.AddAsync(scheduleJob);
+            return scheduleJob;
+        }
+
+        /// <summary>
+        /// Получить тип работы по имени типа
+        /// </summary>
         Type IScheduleJobService.GetJobType(string name) 
             => GetJobType(name);
 
+        /// <summary>
+        /// Получить имя планируемой работы
+        /// </summary>
+        string IScheduleJobService.GetScheduleJobName<TJob>(string postfix)
+            => GetScheduleJobName<TJob>(postfix);
+
+        /// <summary>
+        /// Получить планируемую работу
+        /// </summary>
+        public async Task<ScheduleJob> GetScheduleJobAsync<TJob>(string postfix) where TJob : class, IJob
+        {
+            var scheduleJobName = GetScheduleJobName<TJob>(postfix);
+            var scheduleJob = await _appDbContext.Set<ScheduleJob>().FirstOrDefaultAsync(x => x.Name == scheduleJobName);
+            return scheduleJob;
+        }
+
         private static Type GetJobType(string name) 
             => JobTypes.FirstOrDefault(x => x.Name == name);
+
+        private static string GetScheduleJobName<TJob>(string postfix) where TJob : class, IJob
+            => $"{typeof(TJob).Name}_{postfix}";
     }
 }

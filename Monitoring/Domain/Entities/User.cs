@@ -8,10 +8,18 @@ namespace Monitoring.Domain.Entities
     /// </summary>
     public class User : LongIdBase
     {
-        [MaxLength(256), Required]
+        /// <summary>
+        /// Имя (логин)
+        /// </summary>
+        [Display(Name = "Имя (логин)")]
+        [Required, MaxLength(256)]
         public string UserName { get; set; }
 
-        [MaxLength(512), Required]
+        /// <summary>
+        /// Хэш пароля
+        /// </summary>
+        [Display(Name = "Хэш пароля")]
+        [Required, MaxLength(512)]
         public string PasswordHash { get; set; }
     }
 }

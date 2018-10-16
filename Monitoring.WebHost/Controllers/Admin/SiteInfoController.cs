@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Monitoring.Domain.Dto;
-using Monitoring.Domain.Entities;
 using Monitoring.Services;
 
 namespace Monitoring.WebHost.Controllers.Admin
@@ -10,6 +9,7 @@ namespace Monitoring.WebHost.Controllers.Admin
     public class SiteInfoController : BaseController
     {
         private readonly ISiteInfoService _siteInfoService;
+
         public SiteInfoController(ISiteInfoService siteInfoService)
         {
             _siteInfoService = siteInfoService;
@@ -18,7 +18,7 @@ namespace Monitoring.WebHost.Controllers.Admin
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var data = await _siteInfoService.GetListResultAsync();
+            var data = await _siteInfoService.GetSiteInfoScheduleDtoListAsync();
             return Success(data);
         }
 
@@ -30,14 +30,21 @@ namespace Monitoring.WebHost.Controllers.Admin
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] SiteInfo model)
+        public async Task<IActionResult> Put([FromBody] SiteInfoScheduleDto dto)
         {
-            return Success();
+            var entity = await _siteInfoService.UpdateAsync(dto);
+            return Success(entity);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
+            if (id <= 0L)
+            {
+                return Fail($"Invalid {nameof(id)}.");
+            }
+
+            await _siteInfoService.DeleteAsync(id);
             return Success();
         }
     }

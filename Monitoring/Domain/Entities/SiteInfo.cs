@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Monitoring.Domain.Base;
 
@@ -14,14 +15,14 @@ namespace Monitoring.Domain.Entities
         /// Наименование
         /// </summary>
         [Display(Name = "Наименование")]
-        [MaxLength(256), Required]
+        [Required, MaxLength(256)]
         public string Name { get; set; }
 
         /// <summary>
         /// URL
         /// </summary>
         [Display(Name = "URL")]
-        [MaxLength(1024), Required]
+        [Required, MaxLength(1024)]
         public string Url { get; set; }
 
         /// <summary>
@@ -29,5 +30,11 @@ namespace Monitoring.Domain.Entities
         /// </summary>
         [Display(Name = "Доступный")]
         public bool IsAvailable { get; set; }
+
+        /// <summary>
+        /// Время обновления статуса
+        /// </summary>
+        [Display(Name = "Время обновления статуса")]
+        public DateTime? StatusUpdateTime { get; set; }
     }
 }

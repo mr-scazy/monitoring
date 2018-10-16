@@ -3,6 +3,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Monitoring.Security
 {
+    /// <summary>
+    /// Опции авторизации
+    /// </summary>
     public class AuthOptions
     {
         /// <summary>

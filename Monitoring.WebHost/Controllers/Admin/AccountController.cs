@@ -23,7 +23,7 @@ namespace Monitoring.WebHost.Controllers.Admin
             var identity = await _accountService.GetIdentityAsync(username, password);
             if (identity == null)
             {
-                return BadRequest("Invalid username or password.");
+                return Fail("Invalid username or password.");
             }
 
             var jwt = JwtSecurity.CreateToken(identity.Claims);

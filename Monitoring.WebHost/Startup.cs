@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Monitoring.Quartz;
 using Monitoring.Security;
+using Monitoring.Validation;
 
 namespace Monitoring.WebHost
 {
@@ -41,7 +42,8 @@ namespace Monitoring.WebHost
                 };
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => options.Filters.Add(new ValidationExceptionFilterAttribute()))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

@@ -6,12 +6,19 @@ using Quartz;
 
 namespace Monitoring.Quartz
 {
+    /// <summary>
+    /// Слушатель событий исполнения работ для внедрения зависимостей
+    /// </summary>
     public class DIJobListener : IJobListener
     {
         public string Name => nameof(DIJobListener);
 
         private readonly IServiceProvider _rootServiceProvider;
 
+        /// <summary>
+        /// Слушатель событий исполнения работ для внедрения зависимостей
+        /// </summary>
+        /// <param name="rootServiceProvider">Корневой сервис-провайдер</param>
         public DIJobListener(IServiceProvider rootServiceProvider)
         {
             _rootServiceProvider = rootServiceProvider;
@@ -22,7 +29,7 @@ namespace Monitoring.Quartz
             var job = context.JobInstance;
 
             var prop = job.GetType()
-                .GetProperty(nameof(BaseJob.RootServiceProvider), 
+                .GetProperty(nameof(BaseJob.ServiceProvider), 
                     BindingFlags.Instance | 
                     BindingFlags.Public | 
                     BindingFlags.GetProperty);

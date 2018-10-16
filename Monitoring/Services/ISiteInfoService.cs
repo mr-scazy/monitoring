@@ -4,12 +4,37 @@ using Monitoring.Domain.Entities;
 
 namespace Monitoring.Services
 {
+    /// <summary>
+    /// Интерфейс сервиса информации по сайтам
+    /// </summary>
     public interface ISiteInfoService
     {
-        Task<ListDataResult<SiteInfoDto>> GetDtoListResultAsync();
+        /// <summary>
+        /// Полуить резуьтат списка информации по сайтам
+        /// </summary>
+        Task<ListDataResult<SiteInfoDto>> GetSiteInfoDtoListAsync();
 
-        Task<ListDataResult<SiteInfoScheduleDto>> GetListResultAsync();
+        /// <summary>
+        /// Полуить резуьтат списка информации по сайтам и планированию работы
+        /// </summary>
+        Task<ListDataResult<SiteInfoScheduleDto>> GetSiteInfoScheduleDtoListAsync();
 
-        Task<SiteInfo> CreateAsync(SiteInfoScheduleDto dto);
+        /// <summary>
+        /// Создать запись информации по сайту
+        /// </summary>
+        /// <param name="dto">Информация по сайту и планированию работы</param>
+        Task<SiteInfoScheduleDto> CreateAsync(SiteInfoScheduleDto dto);
+
+        /// <summary>
+        /// Обновить запись информации по сайту
+        /// </summary>
+        /// <param name="dto">Информация по сайту и планированию работы</param>
+        Task<SiteInfoScheduleDto> UpdateAsync(SiteInfoScheduleDto dto);
+
+        /// <summary>
+        /// Удалить запись информации по сайту
+        /// </summary>
+        /// <param name="id">Идентификатор <see cref="SiteInfo"/></param>
+        Task DeleteAsync(long id);
     }
 }

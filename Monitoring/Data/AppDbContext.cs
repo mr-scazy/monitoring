@@ -22,6 +22,9 @@ namespace Monitoring.Data
         /// </summary>
         public DbSet<User> Users { get; set; }
 
+        /// <summary>
+        /// Планируемые работы
+        /// </summary>
         public DbSet<ScheduleJob> ScheduleJobs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

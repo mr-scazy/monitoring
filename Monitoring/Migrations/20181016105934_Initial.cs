@@ -14,9 +14,9 @@ namespace Monitoring.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Job = table.Column<string>(nullable: true),
-                    Params = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Job = table.Column<string>(maxLength: 256, nullable: false),
+                    Params = table.Column<string>(maxLength: 4096, nullable: false),
                     Interval = table.Column<int>(nullable: false),
                     IntervalUnit = table.Column<int>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
@@ -34,7 +34,8 @@ namespace Monitoring.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
                     Url = table.Column<string>(maxLength: 1024, nullable: false),
-                    IsAvailable = table.Column<bool>(nullable: false)
+                    IsAvailable = table.Column<bool>(nullable: false),
+                    StatusUpdateTime = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -54,6 +55,12 @@ namespace Monitoring.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ScheduleJobs_Name",
+                table: "ScheduleJobs",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserName",

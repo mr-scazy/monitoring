@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Monitoring.Security
 {
+    /// <summary>
+    /// Класс для работы с Jwt
+    /// </summary>
     public static class JwtSecurity
     {
         /// <summary>
