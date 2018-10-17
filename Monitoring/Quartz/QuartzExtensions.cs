@@ -80,14 +80,11 @@ namespace Monitoring.Quartz
             {
                 return false;
             }
-
-            await scheduler.PauseTrigger(trigger.Key);
-
+            
             trigger.GetTriggerBuilder()
                 .SetInterval(settings)
                 .Build();
 
-            await scheduler.ResumeTrigger(trigger.Key);
             if (!scheduler.IsStarted)
             {
                 await scheduler.Start(CancellationToken.None);
@@ -116,6 +113,7 @@ namespace Monitoring.Quartz
                 .Build();
 
             await scheduler.ScheduleJob(jobDetail, trigger);
+
             if (!scheduler.IsStarted)
             {
                 await scheduler.Start(CancellationToken.None);

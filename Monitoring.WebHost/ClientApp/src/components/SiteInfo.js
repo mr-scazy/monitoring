@@ -50,7 +50,7 @@ export default class SiteInfo extends Component {
             {this.state.data.items.map((item, i) =>
               <tr key={i}>
                 <td><a href={item.url}>{item.name}</a></td>
-                <td>{item.isAvailable ? 'Да' : 'Нет'}</td>
+                <td>{item.isAvailable ? "Да" : 'Нет'}</td>
                 <td>{item.statusUpdateTimeString}</td>
                 <td></td>
               </tr>
