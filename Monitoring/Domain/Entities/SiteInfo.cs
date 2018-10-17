@@ -15,14 +15,14 @@ namespace Monitoring.Domain.Entities
         /// Наименование
         /// </summary>
         [Display(Name = "Наименование")]
-        [Required, MaxLength(256)]
+        [Required(AllowEmptyStrings = false), MaxLength(256)]
         public string Name { get; set; }
 
         /// <summary>
         /// URL
         /// </summary>
         [Display(Name = "URL")]
-        [Required, MaxLength(1024)]
+        [Required(AllowEmptyStrings = false), MaxLength(1024)]
         public string Url { get; set; }
 
         /// <summary>

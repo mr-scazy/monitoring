@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
-import { Layout } from './components/Layout';
+import Layout from './components/Layout';
 import SiteInfo from './components/SiteInfo';
 import SiteInfoSchedule from './components/SiteInfoSchedule/Page';
 import Login from './components/Login';

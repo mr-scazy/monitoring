@@ -17,21 +17,21 @@ namespace Monitoring.Domain.Entities
         /// Наименование
         /// </summary>
         [Display(Name = "Наименование")]
-        [Required, MaxLength(256)]
+        [Required(AllowEmptyStrings = false), MaxLength(256)]
         public string Name { get; set; }
 
         /// <summary>
         /// Работа
         /// </summary>
         [Display(Name = "Работа")]
-        [Required, MaxLength(256)]
+        [Required(AllowEmptyStrings = false), MaxLength(256)]
         public string Job { get; set; }
 
         /// <summary>
         /// Параметры
         /// </summary>
         [Display(Name = "Параметры")]
-        [Required, MaxLength(4096)]
+        [Required(AllowEmptyStrings = false), MaxLength(4096)]
         public string Params { get; set; }
 
         /// <summary>

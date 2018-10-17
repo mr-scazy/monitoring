@@ -60,6 +60,23 @@ namespace Monitoring.Services.Impl
                 .OrderBy(x => x.Id)
                 .ToListAsync();
 
+            var dictionary = items.ToDictionary(k => _scheduleJobService.GetScheduleJobName<PingJob>(k.Id.ToString()));
+
+            var scheduleJobNames = dictionary.Keys.ToArray();
+
+            var scheduleJobs = await _appDbContext.Set<ScheduleJob>()
+                .Where(x => scheduleJobNames.Contains(x.Name))
+                .ToDictionaryAsync(k => k.Name);
+
+            foreach (var pair in dictionary)
+            {
+                if (scheduleJobs.TryGetValue(pair.Key, out var scheduleJob))
+                {
+                    pair.Value.Interval = scheduleJob.Interval;
+                    pair.Value.IntervalUnit = scheduleJob.IntervalUnit;
+                }
+            }
+
             return ListDataResult.Result(items, items.Count);
         }
 
@@ -74,11 +91,11 @@ namespace Monitoring.Services.Impl
                 Url = dto.Url
             };
 
-            dto.Id = entity.Id;
-            dto.IntervalUnit = IntervalUnit.Second;
-
             await _appDbContext.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
+
+            dto.Id = entity.Id;
+            dto.IntervalUnit = IntervalUnit.Second;
 
             var scheduleJob = await _scheduleJobService.AddScheduleJobAsync(dto, nameof(PingJob));
 
@@ -108,9 +125,12 @@ namespace Monitoring.Services.Impl
 
             //задаем ед. измерения в секундах
             dto.IntervalUnit = IntervalUnit.Second;
-            
+
             var scheduleJob = await _scheduleJobService.GetScheduleJobAsync<PingJob>(entity.Id.ToString()) ??
                               await _scheduleJobService.AddScheduleJobAsync(dto, nameof(PingJob));
+
+            scheduleJob.IntervalUnit = IntervalUnit.Second;
+            scheduleJob.Interval = dto.Interval;
 
             await _appDbContext.SaveChangesAsync();
 

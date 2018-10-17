@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import { Table, ControlLabel, FormControl, HelpBlock, Button, Glyphicon } from 'react-bootstrap';
+import { Table, Button, Glyphicon } from 'react-bootstrap';
 import { fetchGet, fetchPost, fetchPut, fetchDelete } from '../../utils';
 import EditableRow from './EditableRow';
 import Row from './Row';
@@ -47,19 +47,53 @@ export default class Grid extends Component {
   save = (params) => {
     fetchPost('api/admin/SiteInfoSchedule', params)
       .then(this.checkAccess)
-      .then(result => {
+      .then(_ => {
+        this.query();
+      })
+      .catch(this.catchHandler);
+  }
+
+  update = (params) => {
+    fetchPut('api/admin/SiteInfoSchedule', params)
+      .then(this.checkAccess)
+      .then(_ => {
+        this.query();
+      })
+      .catch(this.catchHandler);
+  }
+
+  delete = (params) => {
+    fetchDelete(`api/admin/SiteInfoSchedule/${params.id}`)
+      .then(this.checkAccess)
+      .then(_ => {
         this.query();
       })
       .catch(this.catchHandler);
   }
 
   setData = (data) =>
-    this.setState({loading: false, data});
+    this.setState({loading: false, data, error: null});
 
   setError = (error) =>
     this.setState({loading: false, error});
 
-  onSave = (row) => this.save(row);
+  onSave = (row) => { 
+    row.id > 0 
+      ? this.update(row) 
+      : this.save(row);
+  } 
+
+  onEdit = (row) => {
+    const { data } = this.state;
+    data.items.map(x => x.editable = false);
+    var item = data.items.find(x => x.id == row.id);
+    item.editable = true;
+    this.setState({data});
+  }
+
+  onRemove = (row) => {
+    this.delete(row);
+  }
 
   render() {
     if (this.state.redirect) {
@@ -76,8 +110,10 @@ export default class Grid extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.state.data.items.map((item, i) => <Row key={i} item={item}/>)}
-          {<EditableRow key="add-row" onSave={this.onSave}/>}
+          {this.state.data.items.map((item, i) => item.editable 
+            ? <EditableRow key={i} item={item} onSave={this.onSave}/> 
+            : <Row key={i} item={item} onEdit={this.onEdit} onRemove={this.onRemove}/>)}
+          <EditableRow key="add-row" onSave={this.onSave}/>
         </tbody>
       </Table>
     );

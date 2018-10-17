@@ -12,14 +12,14 @@ namespace Monitoring.Domain.Entities
         /// Имя (логин)
         /// </summary>
         [Display(Name = "Имя (логин)")]
-        [Required, MaxLength(256)]
+        [Required(AllowEmptyStrings = false), MaxLength(256)]
         public string UserName { get; set; }
 
         /// <summary>
         /// Хэш пароля
         /// </summary>
         [Display(Name = "Хэш пароля")]
-        [Required, MaxLength(512)]
+        [Required(AllowEmptyStrings = false), MaxLength(512)]
         public string PasswordHash { get; set; }
     }
 }

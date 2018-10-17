@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +47,7 @@ namespace Monitoring.Quartz
                 var customFactory = (CustomSchedulerFactory) factory;
                 
                 scheduler.ListenerManager.AddJobListener(new DIJobListener(customFactory.ServiceProvider));
-                scheduler.Start();
+                //scheduler.Start().Wait();
                 return scheduler;
             });
 
@@ -89,6 +90,10 @@ namespace Monitoring.Quartz
                 .Build();
 
             await scheduler.ResumeTrigger(trigger.Key);
+            if (!scheduler.IsStarted)
+            {
+                await scheduler.Start(CancellationToken.None);
+            }
 
             return true;
         }
@@ -102,10 +107,9 @@ namespace Monitoring.Quartz
         /// <param name="map">Параметры для работы</param>
         public static async Task ScheduleJobTrigger(this IScheduler scheduler, Type jobType, TriggerSettings settings, JobDataMap map = null)
         {
-            var trigger = TriggerBuilder.Create()                
+            var trigger = TriggerBuilder.Create().StartNow()
                 .WithIdentity(settings.Name)
                 .SetInterval(settings)
-                .StartNow()
                 .Build();
 
             var jobDetail = JobBuilder.Create(jobType)
@@ -114,6 +118,10 @@ namespace Monitoring.Quartz
                 .Build(); 
 
             await scheduler.ScheduleJob(jobDetail, trigger);
+            if (!scheduler.IsStarted)
+            {
+                await scheduler.Start(CancellationToken.None);
+            }
         }
 
         /// <summary>
@@ -132,7 +140,7 @@ namespace Monitoring.Quartz
 
                 case IntervalUnit.Second:
                     return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithIntervalInSeconds(settings.Interval));
+                        => builder.WithIntervalInSeconds(settings.Interval).Build());
 
                 case IntervalUnit.Minute:
                     return triggerBuilder.WithSimpleSchedule(builder 

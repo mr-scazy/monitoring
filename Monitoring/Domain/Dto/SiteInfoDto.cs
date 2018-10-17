@@ -27,5 +27,12 @@ namespace Monitoring.Domain.Dto
         /// Время обновления статуса
         /// </summary>
         public DateTime? StatusUpdateTime { get; set; }
+
+        /// <summary>
+        /// Время обновления статуса строкой
+        /// </summary>
+        public string StatusUpdateTimeString => StatusUpdateTime.HasValue 
+            ? $"{StatusUpdateTime.Value:dd.MM.yyyy HH:mm}" 
+            : string.Empty;
     }
 }

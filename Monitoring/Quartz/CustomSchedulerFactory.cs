@@ -4,7 +4,7 @@ using Quartz.Impl;
 
 namespace Monitoring.Quartz
 {
-    class CustomSchedulerFactory : StdSchedulerFactory
+    public class CustomSchedulerFactory : StdSchedulerFactory
     {
         public IServiceProvider ServiceProvider { get; }
 

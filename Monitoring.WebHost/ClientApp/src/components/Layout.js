@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import HeaderMenu from '../components/HeaderMenu';
 
-export class Layout extends Component {
+export default class Layout extends Component {
   displayName = Layout.name
 
   render() {

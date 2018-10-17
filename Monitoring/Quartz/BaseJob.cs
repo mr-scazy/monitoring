@@ -22,11 +22,11 @@ namespace Monitoring.Quartz
         /// <param name="serviceProvider">Сервис провайдер скоупа</param>
         protected abstract Task OnExecuteAsync(IJobExecutionContext context, IServiceProvider serviceProvider);
 
-        Task IJob.Execute(IJobExecutionContext context)
+        async Task IJob.Execute(IJobExecutionContext context)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
-                return OnExecuteAsync(context, scope.ServiceProvider);
+                await OnExecuteAsync(context, scope.ServiceProvider);
             }
         }
     }

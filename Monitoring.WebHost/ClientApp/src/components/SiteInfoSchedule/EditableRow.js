@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FormControl, Button, Glyphicon } from 'react-bootstrap';
 
-class EditableRow extends Component {
+export default class EditableRow extends Component {
   displayName = EditableRow.name
   constructor(props) {
     super(props);
@@ -14,21 +14,9 @@ class EditableRow extends Component {
     };
   }
 
-  onSave = () => {
-    this.props.onSave && this.props.onSave({...this.state});
-  }
+  onSave = () => this.props.onSave && this.props.onSave({...this.state});
 
-  onCancel = (e) => {
-    this.props.onCancel && this.props.onCancel({...this.state});
-  }
-
-  onChange = (e) => {
-    const newState = {
-      ...this.state,
-      [e.target.name]: e.target.value
-    };
-    this.setState(newState);
-  }
+  onChange = (e) => this.setState({[e.target.name]: e.target.value});
 
   render() {
     const { disabled } = this.props;
@@ -41,8 +29,7 @@ class EditableRow extends Component {
         {this.state.id > 0
           ?
           <td>
-            <Button onClick={this.onSave} bsStyle="success" disabled={disabled}><Glyphicon glyph="ok" /></Button>&nbsp;
-            <Button onClick={this.onCancel} bsStyle="danger" disabled={disabled}><Glyphicon glyph="remove" /></Button>&nbsp;
+            <Button onClick={this.onSave} bsStyle="success" disabled={disabled}><Glyphicon glyph="ok" /></Button>&nbsp;           
           </td>
           :
           <td>
@@ -52,5 +39,3 @@ class EditableRow extends Component {
     );
   };
 }
-
-export default EditableRow;

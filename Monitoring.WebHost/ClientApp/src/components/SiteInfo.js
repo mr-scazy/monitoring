@@ -12,6 +12,10 @@ export default class SiteInfo extends Component {
         error: null
       };
 
+      this.query();
+    }
+
+    query = () => {
       fetch('api/public/siteinfo')
         .then(response => response.json())
         .then(result => {
@@ -45,7 +49,7 @@ export default class SiteInfo extends Component {
               <tr key={i}>
                 <td><a href={item.url}>{item.name}</a></td>
                 <td>{item.isAvailable ? 'Да' : 'Нет'}</td>
-                <td>{item.statusUpdateTime}</td>
+                <td>{item.statusUpdateTimeString}</td>
               </tr>
             )}
           </tbody>
