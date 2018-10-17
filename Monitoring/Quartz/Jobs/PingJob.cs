@@ -15,13 +15,13 @@ namespace Monitoring.Quartz.Jobs
     {
         protected override async Task OnExecuteAsync(IJobExecutionContext context, IServiceProvider serviceProvider)
         {
-            var siteInfoId = context.Get("SiteInfoId");
+            context.JobDetail.JobDataMap.TryGetValue("SiteInfoId", out var siteInfoId);
             if (siteInfoId == null)
             {
                 return;
             }
 
-            var appDbContext = serviceProvider.GetService<AppDbContext>();
+            var appDbContext = serviceProvider.GetRequiredService<AppDbContext>();
 
             var siteInfo = await appDbContext.Set<SiteInfo>().FindAsync(siteInfoId);
             if (siteInfo == null)

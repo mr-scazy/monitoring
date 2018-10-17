@@ -22,7 +22,7 @@ namespace Monitoring.Quartz
         /// </summary>
         public static IServiceCollection AddSchedulerFactory(this IServiceCollection services) =>
             services.AddSingleton<ISchedulerFactory>(provider
-                => new StdSchedulerFactory(new NameValueCollection
+                => new CustomSchedulerFactory(provider, new NameValueCollection
                 {
                     ["quartz.threadPool.threadCount"] = "5"
                 }));
@@ -33,8 +33,7 @@ namespace Monitoring.Quartz
         public static IServiceCollection AddScheduler(this IServiceCollection services, string schedName = null) =>
             services.AddScoped(provider =>
             {
-                var rootServiceProvider = provider.GetService<IServiceProvider>();
-                var factory = rootServiceProvider.GetService<ISchedulerFactory>();
+                var factory = provider.GetService<ISchedulerFactory>();
                 if (factory == null)
                 {
                     throw new NullReferenceException("Не найдена реализация ISchedulerFactory в IServiceProvider.");
@@ -44,8 +43,10 @@ namespace Monitoring.Quartz
                     ? factory.GetScheduler().Result
                     : factory.GetScheduler(schedName).Result;
 
-                scheduler.ListenerManager.AddJobListener(new DIJobListener(rootServiceProvider));
-
+                var customFactory = (CustomSchedulerFactory) factory;
+                
+                scheduler.ListenerManager.AddJobListener(new DIJobListener(customFactory.ServiceProvider));
+                scheduler.Start();
                 return scheduler;
             });
 

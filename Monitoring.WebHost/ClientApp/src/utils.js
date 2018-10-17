@@ -6,50 +6,50 @@ export const fetchGet = (url, options) => {
 
   options.headers = {
     ...options.headers,
-    Authorization: `Bearer ${localStorage.accessToken}`
+    'Authorization': `Bearer ${localStorage.accessToken}`
   };
 
   return fetch(url, options);
 };
 
-export const fetchPost = (url, options) => {
-  options = {
-    ...options,
-    method: 'POST'
+export const fetchPost = (url, params) => {
+  let options = {
+    method: 'POST',
+    body: JSON.stringify(params)
   };
 
   options.headers = {
-    ...options.headers,
-    Authorization: `Bearer ${localStorage.accessToken}`
+    'Authorization': `Bearer ${localStorage.accessToken}`,
+    'Content-Type': 'application/json'
   };
 
   return fetch(url, options);
 };
 
-export const fetchPut = (url, options) => {
-  options = {
-    ...options,
-    method: 'PUT'
+export const fetchPut = (url, params) => {
+  let options = {
+    method: 'PUT',
+    body: JSON.stringify(params)
   };
 
   options.headers = {
-    ...options.headers,
-    Authorization: `Bearer ${localStorage.accessToken}`
+    'Authorization': `Bearer ${localStorage.accessToken}`,
+    'Content-Type': 'application/json'
   };
 
   return fetch(url, options);
 };
 
-export const fetchDelete = (url, options) => {
-  options = {
-    ...options,
+export const fetchDelete = (url) => {
+  let options = {
     method: 'DELETE'
   };
 
   options.headers = {
-    ...options.headers,
-    Authorization: `Bearer ${localStorage.accessToken}`
+    'Authorization': `Bearer ${localStorage.accessToken}`
   };
 
   return fetch(url, options);
 };
+
+export const emptyFn = () => {};

@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
 namespace Monitoring.Quartz
@@ -13,29 +14,29 @@ namespace Monitoring.Quartz
     {
         public string Name => nameof(DIJobListener);
 
-        private readonly IServiceProvider _rootServiceProvider;
+        private readonly IServiceProvider _serviceProvider;
 
         /// <summary>
         /// Слушатель событий исполнения работ для внедрения зависимостей
         /// </summary>
-        /// <param name="rootServiceProvider">Корневой сервис-провайдер</param>
-        public DIJobListener(IServiceProvider rootServiceProvider)
+        /// <param name="serviceProvider">Корневой сервис-провайдер</param>
+        public DIJobListener(IServiceProvider serviceProvider)
         {
-            _rootServiceProvider = rootServiceProvider;
+            _serviceProvider = serviceProvider;
         }
 
-        public Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = new CancellationToken())
+        public async Task JobToBeExecuted(IJobExecutionContext context, CancellationToken cancellationToken = new CancellationToken())
         {
             var job = context.JobInstance;
+
+            await Task.Delay(10, cancellationToken);
 
             var prop = job.GetType()
                 .GetProperty(nameof(BaseJob.ServiceProvider), 
                     BindingFlags.Instance | 
                     BindingFlags.Public);
-
-            prop.SetValue(job, _rootServiceProvider);
-
-            return Task.CompletedTask;
+            
+            prop.SetValue(job, _serviceProvider);
         }
 
         public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken cancellationToken = new CancellationToken())
