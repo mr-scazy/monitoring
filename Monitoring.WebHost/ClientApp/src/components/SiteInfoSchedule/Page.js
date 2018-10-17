@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import Grid from './Grid';
 
+/**
+ * Страница "Настройки мониторинга"
+ */
 export default class Page extends Component {
   displayName = Page.name
   constructor(props) {

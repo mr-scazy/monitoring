@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import { Panel } from 'react-bootstrap';
 import { fetchGet } from '../utils';
 
 export default class Login extends Component {
@@ -35,10 +36,10 @@ export default class Login extends Component {
         if (result.success) {
           this.setData(result.data);
         } else {
-          this.setError(result.message);
+          this.setState({error: result.message})
         }
       })
-      .catch(_ => this.setError('Произошла ошибка.'));
+      .catch(_ => this.setState({error: 'Произошла ошибка.'}));
   }
 
   setData = (data) => {
@@ -47,27 +48,31 @@ export default class Login extends Component {
     this.setState({redirect: true});
   }
 
-  setError = (error) =>
-    this.setState({loading: false, error});
-
   render() {
     if (this.state.redirect) {
       return <Redirect to="/admin"/>;
     }
 
+    let style = {width:'320px', left:'50%', top:'50%', position:'absolute', marginLeft:'-160px'};
+    let style1 = {...style, marginTop:'-220px'};
+    let style2 = {...style, marginTop:'-280px', color:'red', borderColor:'red'};
+
     return (
       <div>
-        <form action="javascript:void(0);" onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Логин</label>
-            <input type="text" className="form-control" id="username" placeholder="Введите логин"/>
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input type="password" className="form-control" id="password" placeholder="Пароль"/>
-          </div>
-          <button type="submit" className="btn btn-primary">Войти</button>
-        </form>
+        <Panel style={style1}>        
+          <form action="javascript:void(0);" onSubmit={this.onSubmit}>
+            <div className="form-group">
+              <label htmlFor="username">Логин</label>
+              <input type="text" className="form-control" id="username" placeholder="Введите логин"/>
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Пароль</label>
+              <input type="password" className="form-control" id="password" placeholder="Пароль"/>
+            </div>
+            <button type="submit" className="btn btn-primary">Войти</button>
+          </form>          
+        </Panel>
+        {this.state.error && <Panel bsStyle="danger" style={style2}>{this.state.error}</Panel>}
       </div>
     );
   }

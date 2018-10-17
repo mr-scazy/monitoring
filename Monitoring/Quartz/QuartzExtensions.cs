@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Services;
-using Quartz.Impl;
 
 namespace Monitoring.Quartz
 {
@@ -45,9 +44,8 @@ namespace Monitoring.Quartz
                     : factory.GetScheduler(schedName).Result;
 
                 var customFactory = (CustomSchedulerFactory) factory;
-                
+
                 scheduler.ListenerManager.AddJobListener(new DIJobListener(customFactory.ServiceProvider));
-                //scheduler.Start().Wait();
                 return scheduler;
             });
 
@@ -115,7 +113,7 @@ namespace Monitoring.Quartz
             var jobDetail = JobBuilder.Create(jobType)
                 .UsingJobData(map ?? new JobDataMap())
                 .WithIdentity(settings.Name)
-                .Build(); 
+                .Build();
 
             await scheduler.ScheduleJob(jobDetail, trigger);
             if (!scheduler.IsStarted)
@@ -131,45 +129,49 @@ namespace Monitoring.Quartz
         /// <param name="settings">Настройки триггера</param>
         /// <returns>Билдер триггера</returns>
         public static TriggerBuilder SetInterval(this TriggerBuilder triggerBuilder, TriggerSettings settings)
-        {
-            switch(settings.IntervalUnit)
+            => triggerBuilder.WithSimpleSchedule(builder =>
             {
-                case IntervalUnit.Millisecond:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithInterval(TimeSpan.FromMilliseconds(settings.Interval)));
+                switch (settings.IntervalUnit)
+                {
+                    case IntervalUnit.Millisecond:
+                        builder.WithInterval(TimeSpan.FromMilliseconds(settings.Interval));
+                        break;
 
-                case IntervalUnit.Second:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithIntervalInSeconds(settings.Interval).Build());
+                    case IntervalUnit.Second:
+                        builder.WithIntervalInSeconds(settings.Interval);
+                        break;
 
-                case IntervalUnit.Minute:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithIntervalInMinutes(settings.Interval));
+                    case IntervalUnit.Minute:
+                        builder.WithIntervalInMinutes(settings.Interval);
+                        break;
 
-                case IntervalUnit.Hour:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithIntervalInHours(settings.Interval));
+                    case IntervalUnit.Hour:
+                        builder.WithIntervalInHours(settings.Interval);
+                        break;
 
-                case IntervalUnit.Day:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval)));
+                    case IntervalUnit.Day:
+                        builder.WithInterval(TimeSpan.FromDays(settings.Interval));
+                        break;
 
-                case IntervalUnit.Week:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval * 7)));
+                    case IntervalUnit.Week:
+                        builder.WithInterval(TimeSpan.FromDays(settings.Interval * 7));
+                        break;
 
-                case IntervalUnit.Month:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval * 30)));
+                    case IntervalUnit.Month:
+                        builder.WithInterval(TimeSpan.FromDays(settings.Interval * 30));
+                        break;
 
-                case IntervalUnit.Year:
-                    return triggerBuilder.WithSimpleSchedule(builder 
-                        => builder.WithInterval(TimeSpan.FromDays(settings.Interval * 365)));
+                    case IntervalUnit.Year:
+                        builder.WithInterval(TimeSpan.FromDays(settings.Interval * 365));
+                        break;
 
-                default: 
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                builder.RepeatForever();
+            });
+
 
         /// <summary>
         /// Получить все типы реализаций <see cref="IJob"/> из <see cref="Assembly"/>

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { FormControl, Button, Glyphicon } from 'react-bootstrap';
 
+/**
+ * Редактируемая строка "Настройки мониторинга"
+ */
 export default class EditableRow extends Component {
   displayName = EditableRow.name
   constructor(props) {
@@ -16,7 +19,13 @@ export default class EditableRow extends Component {
 
   onSave = () => this.props.onSave && this.props.onSave({...this.state});
 
-  onChange = (e) => this.setState({[e.target.name]: e.target.value});
+  onChange = (e) => {
+    let { name, value } = e.target;
+    if (name === 'interval' && !(value > 0)) {
+      value = 0;
+    }
+    this.setState({[name]: value});
+  }
 
   render() {
     const { disabled } = this.props;

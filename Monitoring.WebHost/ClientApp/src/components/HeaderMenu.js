@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Glyphicon, Nav, Navbar, NavItem, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+/**
+ * Меню
+ */
 export default class HeaderMenu extends Component {
 
   constructor(props) {
@@ -17,7 +20,6 @@ export default class HeaderMenu extends Component {
     }
 
     render() {
-
       return (
         <Navbar inverse collapseOnSelect>
           <Navbar.Header>
@@ -39,13 +41,13 @@ export default class HeaderMenu extends Component {
               </LinkContainer>
             </Nav>
             {localStorage.accessToken &&
-                        <Nav pullRight>
-                          <NavDropdown title={localStorage.username} id="basic-nav-dropdown">
-                            <LinkContainer to={'/login'}>
-                              <NavItem onClick={this.logout} href="#"> Выйти </NavItem>
-                            </LinkContainer>
-                          </NavDropdown>
-                        </Nav>
+              <Nav pullRight>
+                <NavDropdown title={localStorage.username} id="basic-nav-dropdown">
+                  <LinkContainer to={'/login'}>
+                    <NavItem onClick={this.logout} href="#"> Выйти </NavItem>
+                  </LinkContainer>
+                </NavDropdown>
+              </Nav>
             }
           </Navbar.Collapse>
         </Navbar>

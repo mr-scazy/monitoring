@@ -5,6 +5,9 @@ import { fetchGet, fetchPost, fetchPut, fetchDelete } from '../../utils';
 import EditableRow from './EditableRow';
 import Row from './Row';
 
+/**
+ * Грид "Настройки мониторинга"
+ */
 export default class Grid extends Component {
   displayName = Grid.name
   constructor(props) {

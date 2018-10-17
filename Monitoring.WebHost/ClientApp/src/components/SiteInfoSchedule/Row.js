@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Glyphicon } from 'react-bootstrap';
 
+/**
+ * Строка "Настройки мониторинга"
+ */
 export default class Row extends Component {
   displayName = Row.name
   constructor(props) {

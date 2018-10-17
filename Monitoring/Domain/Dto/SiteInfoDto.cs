@@ -32,7 +32,7 @@ namespace Monitoring.Domain.Dto
         /// Время обновления статуса строкой
         /// </summary>
         public string StatusUpdateTimeString => StatusUpdateTime.HasValue 
-            ? $"{StatusUpdateTime.Value:dd.MM.yyyy HH:mm}" 
+            ? $"{StatusUpdateTime.Value:dd.MM.yyyy  HH:mm:ss}" 
             : string.Empty;
     }
 }

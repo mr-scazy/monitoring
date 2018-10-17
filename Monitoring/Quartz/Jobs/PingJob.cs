@@ -42,7 +42,7 @@ namespace Monitoring.Quartz.Jobs
                 }
                 finally
                 {
-                    siteInfo.StatusUpdateTime = DateTime.UtcNow;
+                    siteInfo.StatusUpdateTime = DateTime.Now;
                 }
             }
 

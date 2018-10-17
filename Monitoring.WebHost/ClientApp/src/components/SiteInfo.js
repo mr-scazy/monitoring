@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Glyphicon } from 'react-bootstrap';
 
 export default class SiteInfo extends Component {
     displayName = SiteInfo.name
@@ -34,7 +35,7 @@ export default class SiteInfo extends Component {
     setError = (error) =>
       this.setState({loading: false, error});
 
-    static renderData(items) {
+    renderData = () => {
       return (
         <table className="table">
           <thead>
@@ -42,14 +43,16 @@ export default class SiteInfo extends Component {
               <th>Сайт</th>
               <th>Доступен</th>
               <th>Время обновления статуса</th>
+              <th><Button onClick={this.query}><Glyphicon glyph="refresh" /></Button></th>
             </tr>
           </thead>
           <tbody>
-            {items.map((item, i) =>
+            {this.state.data.items.map((item, i) =>
               <tr key={i}>
                 <td><a href={item.url}>{item.name}</a></td>
                 <td>{item.isAvailable ? 'Да' : 'Нет'}</td>
                 <td>{item.statusUpdateTimeString}</td>
+                <td></td>
               </tr>
             )}
           </tbody>
@@ -59,10 +62,10 @@ export default class SiteInfo extends Component {
 
     render() {
       const contents = this.state.loading
-        ? <p><em>Loading...</em></p>
+        ? <p><em>Загрузка...</em></p>
         : this.state.error
           ? <p><em>{this.state.error}</em></p>
-          : SiteInfo.renderData(this.state.data.items);
+          : this.renderData();
 
       return (
         <div>
