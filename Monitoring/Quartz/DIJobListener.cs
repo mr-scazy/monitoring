@@ -31,8 +31,7 @@ namespace Monitoring.Quartz
             var prop = job.GetType()
                 .GetProperty(nameof(BaseJob.ServiceProvider), 
                     BindingFlags.Instance | 
-                    BindingFlags.Public | 
-                    BindingFlags.GetProperty);
+                    BindingFlags.Public);
 
             prop.SetValue(job, _rootServiceProvider);
 

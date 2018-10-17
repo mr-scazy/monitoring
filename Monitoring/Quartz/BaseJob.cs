@@ -13,7 +13,7 @@ namespace Monitoring.Quartz
         /// <summary>
         /// Корневой сервис-провайдер
         /// </summary>
-        public IServiceProvider ServiceProvider { get; } = null;
+        public IServiceProvider ServiceProvider { get; set; }
 
         /// <summary>
         /// Выполнить работы

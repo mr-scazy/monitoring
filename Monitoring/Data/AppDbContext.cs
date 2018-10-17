@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Monitoring.Domain.Entities;
 
 namespace Monitoring.Data
@@ -8,6 +9,13 @@ namespace Monitoring.Data
     /// </summary>
     public class AppDbContext : DbContext
     {
+        /// <summary>
+        /// Только для юнит тестов
+        /// </summary>
+        protected AppDbContext()
+        {
+        }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

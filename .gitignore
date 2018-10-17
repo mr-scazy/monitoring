@@ -3,3 +3,4 @@ obj/
 bin/
 *.sln.DotSettings.user
 appsettings.Development.json
+testsettings.local.json

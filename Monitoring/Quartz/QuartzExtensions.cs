@@ -76,7 +76,6 @@ namespace Monitoring.Quartz
             var triggerKey = new TriggerKey(settings.Name);
 
             var trigger = await scheduler.GetTrigger(triggerKey);
-
             if (trigger == null)
             {
                 return false;
