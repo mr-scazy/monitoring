@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
-import { Table, Button, Glyphicon } from 'react-bootstrap';
+import { Table, Button, Glyphicon, Panel } from 'react-bootstrap';
 import { fetchGet, fetchPost, fetchPut, fetchDelete } from '../../utils';
 import EditableRow from './EditableRow';
 import Row from './Row';
@@ -47,8 +47,12 @@ export default class Grid extends Component {
   save = (params) => {
     fetchPost('api/admin/SiteInfoSchedule', params)
       .then(this.checkAccess)
-      .then(_ => {
-        this.query();
+      .then(result => {
+        if(result.success === false) {
+          this.setError(result.message);
+        } else {
+          this.query();
+        }
       })
       .catch(this.catchHandler);
   }
@@ -56,8 +60,12 @@ export default class Grid extends Component {
   update = (params) => {
     fetchPut('api/admin/SiteInfoSchedule', params)
       .then(this.checkAccess)
-      .then(_ => {
-        this.query();
+      .then(result => {
+        if(result.success === false) {
+          this.setError(result.message);
+        } else {
+          this.query();
+        }
       })
       .catch(this.catchHandler);
   }
@@ -100,22 +108,25 @@ export default class Grid extends Component {
       return <Redirect to="/login"/>;
     }
     return (
-      <Table>
-        <thead>
-          <tr>
-            <th>Наименование</th>
-            <th>URL</th>
-            <th>Интервал</th>
-            <th><Button onClick={this.query}><Glyphicon glyph="refresh" /></Button></th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.data.items.map((item, i) => item.editable 
-            ? <EditableRow key={i} item={item} onSave={this.onSave}/> 
-            : <Row key={i} item={item} onEdit={this.onEdit} onRemove={this.onRemove}/>)}
-          <EditableRow key="add-row" onSave={this.onSave}/>
-        </tbody>
-      </Table>
+      <div>
+        {this.state.error && <Panel bsStyle="danger">{this.state.error}</Panel>}
+        <Table>
+          <thead>
+            <tr>
+              <th>Наименование</th>
+              <th>URL</th>
+              <th>Интервал</th>
+              <th><Button onClick={this.query}><Glyphicon glyph="refresh" /></Button></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.state.data.items.map((item, i) => item.editable 
+              ? <EditableRow key={i} item={item} onSave={this.onSave}/> 
+              : <Row key={i} item={item} onEdit={this.onEdit} onRemove={this.onRemove}/>)}
+            <EditableRow key="add-row" onSave={this.onSave}/>
+          </tbody>
+        </Table>
+      </div>
     );
   }
 }

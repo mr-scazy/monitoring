@@ -10,7 +10,7 @@ export default class Page extends Component {
 
   render() {
     return (
-      <div>
+      <div>        
         <h1>Настройки мониторинга</h1>
         <Grid/>
       </div>

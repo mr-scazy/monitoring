@@ -23,9 +23,17 @@ namespace Monitoring.WebHost.Controllers.Admin
             return Success(data);
         }
 
+        private const string RequiredFieldsMessage = "Поля \"Наименование\" и \"URL\" обязательные для заполнения.";
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] SiteInfoScheduleDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name) || 
+                string.IsNullOrWhiteSpace(dto.Url))
+            {
+                return Fail(RequiredFieldsMessage);
+            }
+
             var entity = await _siteInfoService.CreateAsync(dto);
             return CreatedAtAction("Get", new { entity.Id });
         }
@@ -33,6 +41,12 @@ namespace Monitoring.WebHost.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] SiteInfoScheduleDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name) ||
+                string.IsNullOrWhiteSpace(dto.Url))
+            {
+                return Fail(RequiredFieldsMessage);
+            }
+
             var entity = await _siteInfoService.UpdateAsync(dto);
             return Success(entity);
         }
