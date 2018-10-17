@@ -43,6 +43,7 @@ export default class Login extends Component {
 
   setData = (data) => {
     localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('username', data.username)
     this.setState({redirect: true});
   }
 

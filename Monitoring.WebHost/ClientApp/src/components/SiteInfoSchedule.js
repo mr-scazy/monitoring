@@ -32,7 +32,7 @@ export default class SiteInfoSchedule extends Component {
           this.setError(result.message);
         }
       })
-      .catch(error => this.setError('Произошла ошибка.'));
+      .catch(_ => this.setError('Произошла ошибка.'));
   }
 
   setData = (data) =>
@@ -41,14 +41,54 @@ export default class SiteInfoSchedule extends Component {
   setError = (error) =>
     this.setState({loading: false, error});
 
+  renderRow = (item, key) => {
+    item = { ...item };
+    return item.editable 
+    ? <tr key={key}> 
+        <td><input type="text"/></td>
+        <td><input type="text"/></td>
+        <td><input type="number"/></td>  
+      </tr>
+    : <tr key={key}> 
+        <td>{item.url}</td>
+        <td>{item.name}</td>
+        <td>{item.interval}</td>     
+      </tr>
+  }
+
+  renderData = (items) => {
+    return (
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Наименование</th>
+            <th>URL</th>
+            <th>Интервал</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, i) => this.renderRow(item, i))}
+          {this.renderRow({editable: true}, "new-row")}
+        </tbody>
+      </table>
+    );
+  }
+
   render() {
     if (this.state.redirect) {
       return <Redirect to="/login"/>;
     }
 
+    const contents = this.state.loading
+        ? <p><em>Loading...</em></p>
+        : this.state.error
+          ? <p><em>{this.state.error}</em></p>
+          : this.renderData(this.state.data.items);
+
     return (
       <div>
-        GGGG
+        <h1>Настройки мониторинга</h1>
+        {contents}
       </div>
     );
   }

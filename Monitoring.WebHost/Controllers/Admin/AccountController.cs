@@ -36,7 +36,7 @@ namespace Monitoring.WebHost.Controllers.Admin
 
             var accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            return Success(new { accessToken });
+            return Success(new { accessToken, username });
         }
 
         [HttpGet("check"), Authorize]
