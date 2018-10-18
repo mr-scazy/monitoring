@@ -35,7 +35,11 @@ namespace Monitoring.WebHost.Controllers.Admin
             }
 
             var entity = await _siteInfoService.CreateAsync(dto);
-            return CreatedAtAction("Get", new { entity.Id });
+            return CreatedAtAction("Get", new ResponseResult
+            {
+                Success = true,
+                Data = new { entity.Id }
+            } );
         }
 
         [HttpPut]

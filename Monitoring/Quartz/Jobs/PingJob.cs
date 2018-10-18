@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Monitoring.Data;
 using Monitoring.Domain.Entities;
@@ -23,11 +24,19 @@ namespace Monitoring.Quartz.Jobs
 
             var appDbContext = serviceProvider.GetRequiredService<AppDbContext>();
 
+            var hasScheduleJob = await appDbContext.Set<ScheduleJob>().AnyAsync(x => x.Name == context.Trigger.Key.Name && x.Interval > 0);
+            if (!hasScheduleJob)
+            {
+                return;
+            }
+
             var siteInfo = await appDbContext.Set<SiteInfo>().FindAsync(siteInfoId);
             if (siteInfo == null)
             {
                 return;
             }
+
+            siteInfo.StatusUpdateTime = DateTime.Now;
 
             using (var client = new HttpClient())
             {
@@ -36,16 +45,13 @@ namespace Monitoring.Quartz.Jobs
                     var response = await client.GetAsync(siteInfo.Url);
                     siteInfo.IsAvailable = response.IsSuccessStatusCode;
                 }
-                catch (HttpRequestException)
+                catch (Exception)
                 {
                     siteInfo.IsAvailable = false;
                 }
-                finally
-                {
-                    siteInfo.StatusUpdateTime = DateTime.Now;
-                }
             }
 
+            appDbContext.Update(siteInfo);
             await appDbContext.SaveChangesAsync();
         }
     }

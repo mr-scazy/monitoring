@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Monitoring.IntegrationTests.Dto;
+using Monitoring.IntegrationTests.Dto.Response;
 using Newtonsoft.Json;
 
 namespace Monitoring.IntegrationTests.Api
@@ -12,28 +16,40 @@ namespace Monitoring.IntegrationTests.Api
 
         protected virtual string BaseUrl => Configuration["BaseUrl"];
 
-        private static IConfigurationRoot BuildConfiguration()
-            => new ConfigurationBuilder()
-                .AddJsonFile("testsettings.json", reloadOnChange: true, optional: false)
-                .AddJsonFile("testsettings.local.json", reloadOnChange: true, optional: true)
-                .Build();
+        protected virtual string UserName => "admin";
 
-        protected Task<T> SendGetAsync<T>(string requestUri)
-            => SendAsync<T>(client => client.GetAsync(requestUri));
+        protected virtual string Password => "admin";
 
-        protected Task<T> SendPostAsync<T>(string requestUri, HttpContent httpContent)
-            => SendAsync<T>(client => client.PostAsync(requestUri, httpContent));
+        private UserToken _userToken;
 
-        protected Task<T> SendPutAsync<T>(string requestUri, HttpContent httpContent) 
-            => SendAsync<T>(client => client.PutAsync(requestUri, httpContent));
+        protected virtual UserToken UserToken 
+            => _userToken ?? (_userToken = GetUserToken(UserName, Password).Result);
 
-        protected Task<T> SendDeleteAsync<T>(string requestUri)
-            => SendAsync<T>(client => client.DeleteAsync(requestUri));
+        protected async Task<UserToken> GetUserToken(string username, string password) 
+            => (await SendGetAsync<ResponseResult<UserToken>>(
+                $"api/admin/Account/token?username={username}&password={password}", false))?.Data;
 
-        protected async Task<T> SendAsync<T>(Func<HttpClient, Task<HttpResponseMessage>> sendAsync)
+        protected Task<T> SendGetAsync<T>(string requestUri, bool useToken = true)
+            => SendAsync<T>(client => client.GetAsync(requestUri), useToken);
+
+        protected Task<T> SendPostAsync<T>(string requestUri, HttpContent httpContent, bool useToken = true)
+            => SendAsync<T>(client => client.PostAsync(requestUri, httpContent), useToken);
+
+        protected Task<T> SendPutAsync<T>(string requestUri, HttpContent httpContent, bool useToken = true) 
+            => SendAsync<T>(client => client.PutAsync(requestUri, httpContent), useToken);
+
+        protected Task<T> SendDeleteAsync<T>(string requestUri, bool useToken = true)
+            => SendAsync<T>(client => client.DeleteAsync(requestUri), useToken);
+
+        protected async Task<T> SendAsync<T>(Func<HttpClient, Task<HttpResponseMessage>> sendAsync, bool useToken)
         {
             using (var client = new HttpClient())
             {
+                if (useToken)
+                {
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {UserToken.AccessToken}");
+                }
+
                 client.BaseAddress = new Uri(BaseUrl);
                 var responceMessage = await sendAsync(client);
                 var json = await responceMessage.Content.ReadAsStringAsync();
@@ -41,6 +57,12 @@ namespace Monitoring.IntegrationTests.Api
                 return responseData;
             }
         }
+
+        private static IConfigurationRoot BuildConfiguration()
+            => new ConfigurationBuilder()
+                .AddJsonFile("testsettings.json", reloadOnChange: true, optional: false)
+                .AddJsonFile("testsettings.local.json", reloadOnChange: true, optional: true)
+                .Build();
     }
 }
 
